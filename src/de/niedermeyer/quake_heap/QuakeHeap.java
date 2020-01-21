@@ -28,13 +28,27 @@ public class QuakeHeap {
         return entry;
     }
 
-    public int deleteMin() {
+    public Leaf deleteMinimum() {
         Leaf minimumLeaf = findMinimum();
-        int minimumValue = minimumLeaf.getValue();
         deleteMinimum(minimumLeaf);
         consolidate();
         quake();
-        return minimumValue;
+        return minimumLeaf;
+    }
+
+    public void decreaseKey(Leaf entry, int newKey) throws Exception {
+        if (newKey >= entry.getKey()) {
+            throw new Exception("Operation denied: You can not increase keys");
+        }
+        //TODO check if newKey already exists
+
+        Node highestNode = entry.getHighestParent();
+        if (T.get(highestNode.getLevel()).contains(highestNode)) {
+            // node is root
+            // just change value
+            entry.setKey(newKey);
+        }
+        //TODO implement for value is not minimum of a tree i.e. entry.getHighestNode is not root
     }
 
     @Override
@@ -93,6 +107,7 @@ public class QuakeHeap {
                 Node t1 = roots.get(0);
                 Node t2 = roots.get(1);
 
+                // link
                 Node newRoot = null;
                 if (t1.getMinimum().getKey() < t2.getMinimum().getKey()) {
                     newRoot = new Node(t1.getMinimum(), i + 1, new Node[]{t1, t2});
@@ -123,7 +138,7 @@ public class QuakeHeap {
             if (doQuake) {
                 n.set(i, 0);
             } else {
-                if (n.get(i + 1) > 3 / 4 * n.get(0)) {
+                if (n.get(i + 1) > 3 / 4 * n.get(i)) {
                     doQuake = true;
                 }
             }

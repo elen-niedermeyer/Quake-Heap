@@ -20,6 +20,10 @@ public class Leaf extends Node {
         return key;
     }
 
+    public void setKey(int key) {
+        this.key = key;
+    }
+
     public int getValue() {
         return value;
     }
