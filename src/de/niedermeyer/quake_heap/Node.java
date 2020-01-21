@@ -8,6 +8,16 @@ public class Node {
 
     private Node[] children = new Node[2];
 
+    public Node() {
+        // default constructor
+    }
+
+    public Node(Leaf minimum, int level, Node[] children) {
+        this.minimum = minimum;
+        this.level = level;
+        this.children = children;
+    }
+
     public int getLevel() {
         return level;
     }
@@ -16,7 +26,7 @@ public class Node {
         this.level = level;
     }
 
-    public Node getMinimum() {
+    public Leaf getMinimum() {
         return minimum;
     }
 

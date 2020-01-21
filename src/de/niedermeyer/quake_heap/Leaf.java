@@ -12,7 +12,8 @@ public class Leaf extends Node {
         this.value = value;
 
         this.level = 0;
-        this.minimum = null;
+        this.minimum = this;
+        this.highestParent = this;
     }
 
     @Override
@@ -32,6 +33,10 @@ public class Leaf extends Node {
 
     public int getKey() {
         return key;
+    }
+
+    public int getValue() {
+        return value;
     }
 
     public Node getHighestParent() {
