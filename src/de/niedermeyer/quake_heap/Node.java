@@ -22,24 +22,12 @@ public class Node {
         return level;
     }
 
-    public void setLevel(int level) throws Exception {
-        this.level = level;
-    }
-
     public Leaf getMinimum() {
         return minimum;
     }
 
-    public void setMinimum(Leaf minimum) throws Exception {
-        this.minimum = minimum;
-    }
-
     public Node[] getChildren() {
         return children;
-    }
-
-    public void setChildren(Node[] children) throws Exception {
-        this.children = children;
     }
 
     @Override

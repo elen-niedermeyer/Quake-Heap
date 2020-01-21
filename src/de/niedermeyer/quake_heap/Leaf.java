@@ -16,21 +16,6 @@ public class Leaf extends Node {
         this.highestParent = this;
     }
 
-    @Override
-    public void setChildren(Node[] children) throws Exception {
-        throw new Exception("You are not allowed to set children on leaves.");
-    }
-
-    @Override
-    public void setLevel(int level) throws Exception {
-        throw new Exception("You are not allowed to change the level of a leaf.");
-    }
-
-    @Override
-    public void setMinimum(Leaf minimum) throws Exception {
-        throw new Exception("You are not allowed to change the minimum pointer of a leaf.");
-    }
-
     public int getKey() {
         return key;
     }
