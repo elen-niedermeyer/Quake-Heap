@@ -101,7 +101,8 @@ public class QuakeHeap {
     }
 
     private void consolidate() {
-        for (LinkedList<Node> roots : T) {
+        for (int i = 0; i < T.size(); i++) {
+            LinkedList<Node> roots = T.get(i);
             while (roots.size() > 1) {
                 link(roots.get(0), roots.get(1));
             }
