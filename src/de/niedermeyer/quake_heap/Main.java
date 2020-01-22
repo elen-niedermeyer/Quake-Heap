@@ -16,11 +16,11 @@ public class Main {
         entries.add(quakeHeap.insert(3, 3));
         entries.add(quakeHeap.insert(4, 4));
         System.out.println(quakeHeap);
-        entries.remove(quakeHeap.deleteMinimum());
+        entries.remove(quakeHeap.extractMin());
         System.out.println(quakeHeap);
-        quakeHeap.decreaseKey(entries.get(0), 2);
+        quakeHeap.decreaseKey(entries.get(1), 2);
         System.out.println(quakeHeap);
-        entries.remove(quakeHeap.deleteMinimum());
+        entries.remove(quakeHeap.extractMin());
         System.out.println(quakeHeap);
     }
 }

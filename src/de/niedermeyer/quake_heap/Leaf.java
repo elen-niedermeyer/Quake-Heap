@@ -5,15 +5,15 @@ public class Leaf extends Node {
     private int key;
     private int value;
 
-    private Node highestParent;
+    private Node valueTop;
 
     Leaf(int key, int value) {
         this.key = key;
         this.value = value;
 
         this.level = 0;
-        this.minimum = this;
-        this.highestParent = this;
+        this.leaf = this;
+        this.valueTop = this;
     }
 
     public int getKey() {
@@ -28,12 +28,12 @@ public class Leaf extends Node {
         return value;
     }
 
-    public Node getHighestParent() {
-        return highestParent;
+    public Node getValueTop() {
+        return valueTop;
     }
 
-    public void setHighestParent(Node highestParent) {
-        this.highestParent = highestParent;
+    public void setValueTop(Node valueTop) {
+        this.valueTop = valueTop;
     }
 
     @Override

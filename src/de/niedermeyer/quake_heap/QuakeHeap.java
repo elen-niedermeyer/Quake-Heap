@@ -28,9 +28,9 @@ public class QuakeHeap {
         return entry;
     }
 
-    public Leaf deleteMinimum() {
-        Leaf minimumLeaf = findMinimum();
-        deleteMinimum(minimumLeaf);
+    public Leaf extractMin() {
+        Leaf minimumLeaf = findMin();
+        deleteMin(minimumLeaf);
         consolidate();
         quake();
         return minimumLeaf;
@@ -42,13 +42,13 @@ public class QuakeHeap {
         }
         //TODO check if newKey already exists
 
-        Node highestNode = entry.getHighestParent();
-        if (T.get(highestNode.getLevel()).contains(highestNode)) {
-            // node is root
-            // just change value
-            entry.setKey(newKey);
+        Node valueTop = entry.getValueTop();
+        if (valueTop.getParent() != null) {
+            // node is not root
+            // cut
+            cut(valueTop);
         }
-        //TODO implement for value is not minimum of a tree i.e. entry.getHighestNode is not root
+        entry.setKey(newKey);
     }
 
     @Override
@@ -58,25 +58,25 @@ public class QuakeHeap {
                 .collect(Collectors.joining("\t"));
     }
 
-    private Leaf findMinimum() {
-        Leaf minimum = new Leaf(-1, -1);
+    private Leaf findMin() {
+        Leaf min = null;
         for (LinkedList<Node> roots : T) {
             for (Node root : roots) {
-                Leaf treeMinimum = root.getMinimum();
+                Leaf treeMinimum = root.getLeaf();
 
-                if (minimum.getKey() == -1 || treeMinimum.getKey() < minimum.getKey()) {
-                    minimum = treeMinimum;
+                if (min == null || treeMinimum.getKey() < min.getKey()) {
+                    min = treeMinimum;
                 }
             }
         }
 
-        return minimum;
+        return min;
     }
 
-    private void deleteMinimum(Leaf minimumLeaf) {
-        int minimum = minimumLeaf.getKey();
+    private void deleteMin(Leaf minLeaf) {
+        int minimum = minLeaf.getKey();
 
-        Node currentNode = minimumLeaf.getHighestParent();
+        Node currentNode = minLeaf.getValueTop();
         int currentLevel = currentNode.getLevel();
 
         while (currentLevel > 0) {
@@ -87,7 +87,7 @@ public class QuakeHeap {
             Node[] children = currentNode.getChildren();
             for (int i = 0; i < children.length; i++) {
                 T.get(currentLevel).add(children[i]);
-                if (children[i].getMinimum().getKey() == minimum) {
+                if (children[i].getLeaf().getKey() == minimum) {
                     currentNode = children[i];
                 }
             }
@@ -104,30 +104,7 @@ public class QuakeHeap {
         for (int i = 0; i < T.size(); i++) {
             LinkedList<Node> roots = T.get(i);
             while (roots.size() > 1) {
-                Node t1 = roots.get(0);
-                Node t2 = roots.get(1);
-
-                // link
-                Node newRoot = null;
-                if (t1.getMinimum().getKey() < t2.getMinimum().getKey()) {
-                    newRoot = new Node(t1.getMinimum(), i + 1, new Node[]{t1, t2});
-                    t1.getMinimum().setHighestParent(newRoot);
-                } else {
-                    newRoot = new Node(t2.getMinimum(), i + 1, new Node[]{t1, t2});
-                    t2.getMinimum().setHighestParent(newRoot);
-                }
-
-                if (T.size() == i + 1) {
-                    T.add(i + 1, new LinkedList<>());
-                }
-                if (n.size() == i + 1) {
-                    n.add(i + 1, 0);
-                }
-
-                T.get(i + 1).add(newRoot);
-                n.set(i + 1, n.get(i + 1) + 1);
-                T.get(i).remove(t1);
-                T.get(i).remove(t2);
+                link(roots.get(0), roots.get(1));
             }
         }
     }
@@ -143,5 +120,57 @@ public class QuakeHeap {
                 }
             }
         }
+    }
+
+    private void cut(Node node) {
+        // cut edge from parent
+        Node parent = node.getParent();
+        if (parent != null) {
+            Node[] children = parent.getChildren();
+            for (int i = 0; i < children.length; i++) {
+                if (children[i].equals(node)) {
+                    children[i] = null;
+                }
+            }
+
+            // cut edge to parent
+            node.setParent(null);
+
+            // update T
+            T.get(node.getLevel()).add(node);
+        }
+    }
+
+    private void link(Node root1, Node root2) {
+        int currentLevel = root1.getLevel();
+        // new root
+        Node newRoot = null;
+        if (root1.getLeaf().getKey() < root2.getLeaf().getKey()) {
+            newRoot = new Node(root1.getLeaf(), currentLevel + 1, null, new Node[]{root1, root2});
+            // update value-top-pointer of leaf
+            root1.getLeaf().setValueTop(newRoot);
+        } else {
+            newRoot = new Node(root2.getLeaf(), currentLevel + 1, null, new Node[]{root1, root2});
+            // update value-top-pointer of leaf
+            root2.getLeaf().setValueTop(newRoot);
+        }
+
+        // update parent pointer of given nodes
+        root1.setParent(newRoot);
+        root2.setParent(newRoot);
+
+        // update T
+        T.get(currentLevel).remove(root1);
+        T.get(currentLevel).remove(root2);
+        if (T.size() == currentLevel + 1) {
+            T.add(currentLevel + 1, new LinkedList<>());
+        }
+        T.get(currentLevel + 1).add(newRoot);
+
+        //update n
+        if (n.size() == currentLevel + 1) {
+            n.add(currentLevel + 1, 0);
+        }
+        n.set(currentLevel + 1, n.get(currentLevel + 1) + 1);
     }
 }

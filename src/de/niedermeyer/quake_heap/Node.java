@@ -4,7 +4,9 @@ public class Node {
 
     protected int level;
 
-    protected Leaf minimum;
+    protected Leaf leaf;
+
+    protected Node parent;
 
     private Node[] children = new Node[2];
 
@@ -12,9 +14,10 @@ public class Node {
         // default constructor
     }
 
-    public Node(Leaf minimum, int level, Node[] children) {
-        this.minimum = minimum;
+    public Node(Leaf leaf, int level, Node parent, Node[] children) {
+        this.leaf = leaf;
         this.level = level;
+        this.parent = parent;
         this.children = children;
     }
 
@@ -22,8 +25,16 @@ public class Node {
         return level;
     }
 
-    public Leaf getMinimum() {
-        return minimum;
+    public Leaf getLeaf() {
+        return leaf;
+    }
+
+    public Node getParent() {
+        return parent;
+    }
+
+    public void setParent(Node parent) {
+        this.parent = parent;
     }
 
     public Node[] getChildren() {
@@ -32,6 +43,6 @@ public class Node {
 
     @Override
     public String toString() {
-        return String.valueOf(minimum.getKey());
+        return String.valueOf(leaf.getKey());
     }
 }
