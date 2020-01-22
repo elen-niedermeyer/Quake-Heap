@@ -85,10 +85,10 @@ public class QuakeHeap {
 
             currentLevel--;
             Node[] children = currentNode.getChildren();
-            for (int i = 0; i < children.length; i++) {
-                T.get(currentLevel).add(children[i]);
-                if (children[i].getLeaf().getKey() == minimum) {
-                    currentNode = children[i];
+            for (Node child : children) {
+                T.get(currentLevel).add(child);
+                if (child.getLeaf().getKey() == minimum) {
+                    currentNode = child;
                 }
             }
         }
@@ -101,8 +101,7 @@ public class QuakeHeap {
     }
 
     private void consolidate() {
-        for (int i = 0; i < T.size(); i++) {
-            LinkedList<Node> roots = T.get(i);
+        for (LinkedList<Node> roots : T) {
             while (roots.size() > 1) {
                 link(roots.get(0), roots.get(1));
             }
@@ -144,7 +143,7 @@ public class QuakeHeap {
     private void link(Node root1, Node root2) {
         int currentLevel = root1.getLevel();
         // new root
-        Node newRoot = null;
+        Node newRoot;
         if (root1.getLeaf().getKey() < root2.getLeaf().getKey()) {
             newRoot = new Node(root1.getLeaf(), currentLevel + 1, null, new Node[]{root1, root2});
             // update value-top-pointer of leaf
